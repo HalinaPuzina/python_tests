@@ -83,6 +83,7 @@ def detect_violated_absolute_current_dd():
     dd = dd.groupby(['strategy']).apply(
         lambda x: x['cum_sum_pnl'] - x['cum_max_pnl']).to_frame().reset_index().drop(
         columns=['level_1']).rename(columns={0: 'drawdown'})
+    absolute_current_drawdown_limit = 10000000
     dd['threshold'] = absolute_current_drawdown_limit
     violated = dd.loc[(abs(dd['drawdown']) > dd['threshold']), [
         'strategy', 'drawdown', 'threshold']]
@@ -191,7 +192,6 @@ if __name__ == '__main__':
     pd.set_option('use_inf_as_na', True)
     pd.options.mode.chained_assignment = None
     df = pd.read_csv('sample_data.csv')
-    absolute_current_drawdown_limit = 10000000
     current_date = 20151101
     cum_sum_pnl = get_cum_sum_pnl()
     current_pnl = cum_sum_pnl.loc[(cum_sum_pnl['date'] == current_date), ['strategy', 'cum_sum_pnl']]
